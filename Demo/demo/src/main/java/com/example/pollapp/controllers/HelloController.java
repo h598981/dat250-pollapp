@@ -1,5 +1,5 @@
-package com.example.demo.Controllers;
-
+package com.example.pollapp.controllers;
+    
 
 
 import org.springframework.web.bind.annotation.GetMapping;
