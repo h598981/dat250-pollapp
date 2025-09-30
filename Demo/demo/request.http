@@ -1,0 +1,88 @@
+### Create two users
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{ "username": "Alice", "email": "alice@example.com" }
+
+###
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{ "username": "Bob", "email": "bob@example.com" }
+
+### Create a PUBLIC poll (anonymous allowed, multiple votes OK)
+POST http://localhost:8080/api/polls
+Content-Type: application/json
+
+{
+  "ownerUserId": 1,
+  "question": "Favorite language?",
+  "isPublic": true,
+  "limitOnePerUser": false,
+  "publishedAt": "2025-09-26T00:00:00Z",
+  "deadlineAt": "2025-12-31T23:59:59Z",
+  "options": ["Java", "Kotlin", "Python"]
+}
+
+### Get REAL option ids for poll 1
+GET http://localhost:8080/api/polls/1/options
+
+### Anonymous vote on poll 1, use an id from the response above (e.g. 1)
+POST http://localhost:8080/api/polls/1/votes
+Content-Type: application/json
+
+{ "optionId": 1 }
+
+### Same anonymous user votes again (allowed for public poll), pick another id (e.g. 2)
+POST http://localhost:8080/api/polls/1/votes
+Content-Type: application/json
+
+{ "optionId": 2 }
+
+### Create a PRIVATE poll (invite Bob only, limit one per user)
+POST http://localhost:8080/api/polls
+Content-Type: application/json
+
+{
+  "ownerUserId": 1,
+  "question": "Private: choose one",
+  "isPublic": false,
+  "limitOnePerUser": true,
+  "publishedAt": "2025-09-26T00:00:00Z",
+  "deadlineAt": "2025-12-31T23:59:59Z",
+  "options": ["A","B"],
+  "invitedUserIds": [2]
+}
+
+### List private polls for Bob (X-User-Id: 2)
+GET http://localhost:8080/api/polls
+X-User-Id: 2
+
+### Get REAL option ids for poll 2 (they will likely be different, e.g. 4 and 5)
+GET http://localhost:8080/api/polls/2/options
+
+### Bob votes once -> OK (pick one of the option ids from the previous response)
+POST http://localhost:8080/api/polls/2/votes
+Content-Type: application/json
+X-User-Id: 2
+
+{ "optionId": 4 }
+
+### Bob tries to vote again -> should fail (limitOnePerUser)
+POST http://localhost:8080/api/polls/2/votes
+Content-Type: application/json
+X-User-Id: 2
+
+{ "optionId": 5 }
+
+### Anonymous tries private poll -> should fail (login required)
+POST http://localhost:8080/api/polls/2/votes
+Content-Type: application/json
+
+{ "optionId": 4 }
+
+### List votes (public poll 1)
+GET http://localhost:8080/api/polls/1/votes
+
+### List votes (private poll 2)
+GET http://localhost:8080/api/polls/2/votes
