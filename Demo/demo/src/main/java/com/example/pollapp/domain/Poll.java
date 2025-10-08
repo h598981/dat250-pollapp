@@ -11,11 +11,11 @@ public class Poll {
     private Long ownerUserId;
     private String question;
 
-    // NEW: visibility + constraints
+    //  visibility + constraints
     private boolean isPublic;             // true = public, false = private
     private boolean limitOnePerUser;      // only relevant for private polls
 
-    // NEW: voting time window
+    // voting time window
     private Instant publishedAt;          // voting valid from (inclusive)
     private Instant deadlineAt;           // voting valid until (inclusive)
 
@@ -23,7 +23,7 @@ public class Poll {
     private List<Long> optionIds = new ArrayList<>();
     private List<Long> voteIds   = new ArrayList<>();
 
-    // NEW: invited users for private polls
+    //  invited users for private polls
     private Set<Long> invitedUserIds = new HashSet<>();
 
     public Poll() {}

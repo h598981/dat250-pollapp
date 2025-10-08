@@ -1,7 +1,7 @@
 package com.example.pollapp.controllers;
 
 import com.example.pollapp.domain.Poll;
-import com.example.pollapp.domain.VoteOption; // <-- add this
+import com.example.pollapp.domain.VoteOption; 
 import com.example.pollapp.dto.CreatePollDto;
 import com.example.pollapp.service.PollManager;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.List; // <-- add this
+import java.util.List; 
 import java.util.NoSuchElementException;
 
 @RestController
@@ -49,7 +49,7 @@ public class PollsController {
         return manager.getPoll(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // NEW: list options for a poll
+    // list options for a poll
     @GetMapping("/{id}/options")
     public ResponseEntity<List<VoteOption>> options(@PathVariable Long id) {
         try {

@@ -9,7 +9,7 @@ public class CreatePollDto {
     public boolean isPublic;        // true = public, false = private
     public boolean limitOnePerUser; // only applies if isPublic == false
 
-    public Instant publishedAt;     // ISO-8601, e.g. "2025-09-26T10:00:00Z"
+    public Instant publishedAt;     
     public Instant deadlineAt;
 
     public List<String> options;    // option captions

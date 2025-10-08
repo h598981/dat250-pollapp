@@ -21,7 +21,7 @@ public class VotesController {
                                   @RequestBody CreateVoteDto dto,
                                   @RequestHeader(value = "X-User-Id", required = false) Long userIdHeader){
         try{
-            Long effectiveUserId = (dto.userId != null) ? dto.userId : userIdHeader; // prefer body, else header
+            Long effectiveUserId = (dto.userId != null) ? dto.userId : userIdHeader; 
             Vote v = manager.vote(pollId, effectiveUserId, dto.optionId);
             return ResponseEntity.created(URI.create("/api/polls/"+pollId+"/votes/"+v.getId())).body(v);
         } catch (IllegalStateException | NoSuchElementException e){
