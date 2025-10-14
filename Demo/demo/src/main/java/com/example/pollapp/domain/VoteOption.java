@@ -1,27 +1,48 @@
 package com.example.pollapp.domain;
 
+import jakarta.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+@Entity
+@Table(
+    name = "vote_options",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"poll_id", "presentation_order"})
+)
 public class VoteOption {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long pollId;
-    private String text;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "poll_id", nullable = false)
+    private Poll poll;
+
+    @Column(nullable = false)
+    private String caption;
+
+    @Column(name = "presentation_order", nullable = false)
     private int presentationOrder;
 
-    public VoteOption() {}
-    public VoteOption(Long id, Long pollId, String text, int presentationOrder) {
-        this.id = id; this.pollId = pollId; this.text = text; this.presentationOrder = presentationOrder;
+    @OneToMany(mappedBy = "votesOn", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Vote> votes = new LinkedHashSet<>();
+
+    protected VoteOption() {} // JPA constructor
+
+    public VoteOption(Poll poll, String caption, int presentationOrder) {
+        this.poll = poll;
+        this.caption = caption;
+        this.presentationOrder = presentationOrder;
     }
 
-    // getters/setters...
-
-
-
+    // Getters
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Poll getPoll() { return poll; }
+    public String getCaption() { return caption; }
+    public int getPresentationOrder() { return presentationOrder; }
+    public Set<Vote> getVotes() { return votes; }
 
-    public Long getPollId() { return pollId; }
-    public void setPollId(Long pollId) { this.pollId = pollId; }
-
-    public String getText() { return text; }
-    public void setText(String text) { this.text = text; }
+    // Setters
+    public void setCaption(String caption) { this.caption = caption; }
 }
-

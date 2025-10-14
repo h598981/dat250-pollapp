@@ -1,4 +1,4 @@
-package com.example.pollapp.controllers;
+/*package com.example.pollapp.controllers;
 
 import com.example.pollapp.domain.User;
 import com.example.pollapp.dto.CreateUserDto;
@@ -50,4 +50,4 @@ public class UsersController {
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
-}
+} */
