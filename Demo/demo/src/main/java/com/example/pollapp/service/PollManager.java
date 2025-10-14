@@ -1,4 +1,4 @@
-package com.example.pollapp.service;
+/**package com.example.pollapp.service;
 
 import com.example.pollapp.domain.Poll;
 import com.example.pollapp.domain.Vote;
@@ -39,7 +39,7 @@ public class PollManager {
 
     // If you don’t have createPoll yet, you can stub it out or skip for now.
 
-    /** EXACT signature used by VotesController line ~25 */
+    /** EXACT signature used by VotesController line ~25 
     public Vote vote(Long pollId, Long userIdOrNull, Long optionId) {
         Poll p = polls.get(pollId);
         if (p == null) throw new NoSuchElementException("Poll not found");
@@ -55,7 +55,7 @@ public class PollManager {
         return v;
     }
 
-    /** EXACT signature used by VotesController line ~35 */
+    /** EXACT signature used by VotesController line ~35 
     public List<Vote> listVotesByPoll(Long pollId) {
         Poll p = polls.get(pollId);
         if (p == null) throw new NoSuchElementException("Poll not found");
@@ -144,3 +144,4 @@ public class PollManager {
 }
 
 }
+*/

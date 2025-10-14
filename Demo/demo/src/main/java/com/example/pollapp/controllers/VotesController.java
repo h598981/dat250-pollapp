@@ -1,4 +1,4 @@
-package com.example.pollapp.controllers;
+/* package com.example.pollapp.controllers;
 
 import com.example.pollapp.domain.Vote;
 import com.example.pollapp.dto.CreateVoteDto;
@@ -38,3 +38,4 @@ public class VotesController {
         }
     }
 }
+*/

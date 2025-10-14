@@ -1,36 +1,38 @@
 package com.example.pollapp.domain;
 
+import jakarta.persistence.*;
 import java.time.Instant;
 
+@Entity
+@Table(name = "votes")
 public class Vote {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long pollId;
-    private Long optionId;
-    private Long userId;     // null for anonymous votes
-    private Instant timestamp;
 
-    public Vote() {}
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "voter_id", nullable = false)
+    private User voter;
 
-    public Vote(Long id, Long pollId, Long optionId, Long userId, Instant timestamp) {
-        this.id = id;
-        this.pollId = pollId;
-        this.optionId = optionId;
-        this.userId = userId;
-        this.timestamp = timestamp;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "option_id", nullable = false)
+    private VoteOption votesOn;
+
+    @Column(nullable = false)
+    private Instant timestamp = Instant.now();
+
+    protected Vote() {}
+
+    public Vote(User voter, VoteOption option) {
+        this.voter = voter;
+        this.votesOn = option;
+        this.timestamp = Instant.now();
     }
 
+    // Getters
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getPollId() { return pollId; }
-    public void setPollId(Long pollId) { this.pollId = pollId; }
-
-    public Long getOptionId() { return optionId; }
-    public void setOptionId(Long optionId) { this.optionId = optionId; }
-
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-
+    public User getVoter() { return voter; }
+    public VoteOption getVotesOn() { return votesOn; }
     public Instant getTimestamp() { return timestamp; }
-    public void setTimestamp(Instant timestamp) { this.timestamp = timestamp; }
 }

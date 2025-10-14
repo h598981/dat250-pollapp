@@ -1,69 +1,65 @@
 package com.example.pollapp.domain;
 
+import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+@Entity
+@Table(name = "polls")
 public class Poll {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long ownerUserId;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_id", nullable = false)
+    private User createdBy;
+
+    @Column(nullable = false)
     private String question;
 
-    //  visibility + constraints
-    private boolean isPublic;             // true = public, false = private
-    private boolean limitOnePerUser;      // only relevant for private polls
+    private boolean isPublic;
+    private boolean limitOnePerUser;
+    private Instant publishedAt;
+    private Instant deadlineAt;
 
-    // voting time window
-    private Instant publishedAt;          // voting valid from (inclusive)
-    private Instant deadlineAt;           // voting valid until (inclusive)
+    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("presentationOrder ASC")
+    private List<VoteOption> options = new ArrayList<>();
 
-    // Associations by ID to avoid JSON cycles
-    private List<Long> optionIds = new ArrayList<>();
-    private List<Long> voteIds   = new ArrayList<>();
+    protected Poll() {} // JPA constructor
 
-    //  invited users for private polls
-    private Set<Long> invitedUserIds = new HashSet<>();
-
-    public Poll() {}
-
-    public Poll(Long id, Long ownerUserId, String question, boolean isPublic, boolean limitOnePerUser,
-                Instant publishedAt, Instant deadlineAt) {
-        this.id = id;
-        this.ownerUserId = ownerUserId;
+    public Poll(String question, User createdBy) {
         this.question = question;
-        this.isPublic = isPublic;
-        this.limitOnePerUser = limitOnePerUser;
-        this.publishedAt = publishedAt;
-        this.deadlineAt = deadlineAt;
+        this.createdBy = createdBy;
     }
 
-    // getters/setters...
+    /**
+     * Adds a new option to this Poll and returns it.
+     * presentationOrder = current size (0-based).
+     */
+    public VoteOption addVoteOption(String caption) {
+        int order = options.size();
+        VoteOption option = new VoteOption(this, caption, order);
+        options.add(option);
+        return option;
+    }
 
+    // Getters
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getOwnerUserId() { return ownerUserId; }
-    public void setOwnerUserId(Long ownerUserId) { this.ownerUserId = ownerUserId; }
-
+    public User getCreatedBy() { return createdBy; }
     public String getQuestion() { return question; }
-    public void setQuestion(String question) { this.question = question; }
-
+    public List<VoteOption> getOptions() { return options; }
     public boolean isPublic() { return isPublic; }
-    public void setPublic(boolean aPublic) { isPublic = aPublic; }
-
     public boolean isLimitOnePerUser() { return limitOnePerUser; }
-    public void setLimitOnePerUser(boolean limitOnePerUser) { this.limitOnePerUser = limitOnePerUser; }
-
     public Instant getPublishedAt() { return publishedAt; }
-    public void setPublishedAt(Instant publishedAt) { this.publishedAt = publishedAt; }
-
     public Instant getDeadlineAt() { return deadlineAt; }
+
+    // Setters
+    public void setPublic(boolean isPublic) { this.isPublic = isPublic; }
+    public void setLimitOnePerUser(boolean limitOnePerUser) { this.limitOnePerUser = limitOnePerUser; }
+    public void setPublishedAt(Instant publishedAt) { this.publishedAt = publishedAt; }
     public void setDeadlineAt(Instant deadlineAt) { this.deadlineAt = deadlineAt; }
-
-    public List<Long> getOptionIds() { return optionIds; }
-    public List<Long> getVoteIds() { return voteIds; }
-
-    public Set<Long> getInvitedUserIds() { return invitedUserIds; }
 }
